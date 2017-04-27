@@ -3,6 +3,10 @@
 #include <hal/hal.h>
 #include <SPI.h>
 
+
+#define temp_pin A0
+#define battery_pin A1
+#define light_pin A2
 // LoRaWAN NwkSKey, network session key
 // This is the default Semtech key, which is used by the early prototype TTN
 // network.
@@ -103,7 +107,7 @@ void onEvent (ev_t ev) {
     }
 }
 
-void do_send(osjob_t* j){
+void do_send(osjob_t* j){                           // Sends Hello World on startup to check if node is working
     // Check if there is not a current TX/RX job running
     if (LMIC.opmode & OP_TXRXPEND) {
         Serial.println(F("OP_TXRXPEND, not sending"));
@@ -115,10 +119,40 @@ void do_send(osjob_t* j){
     // Next TX is scheduled after TX_COMPLETE event.
 }
 
+
+
+typedef struct{
+    float temperature;  // variable to store temperature
+    int battery;  // variable to store battery percentage
+    int light;
+}data;
+
+
+
+void data_send(data val){                   //send s the data sensed at the node
+    // Check if there is not a current TX/RX job running
+    if (LMIC.opmode & OP_TXRXPEND) {
+        Serial.println(F("OP_TXRXPEND, not sending"));
+    } else {
+        // Prepare upstream data transmission at the next possible time.
+        LMIC_setTxData2(1, val, sizeof(val)-1, 0);
+        Serial.println(F("Packet queued"));
+    }
+    // Next TX is scheduled after TX_COMPLETE event.
+}
+
+
+
+
 void setup() {
     Serial.begin(115200);
     Serial.println(F("Starting"));
 
+    
+    pinMode(temp_pin,INPUT);
+    pinMode(light_pin,INPUT);
+    pinMode(battery_pin,INPUT);
+    
     #ifdef VCC_ENABLE
     // For Pinoccio Scout boards
     pinMode(VCC_ENABLE, OUTPUT);
@@ -190,6 +224,13 @@ void setup() {
     do_send(&sendjob);
 }
 
-void loop() {
-os_runloop_once();
+void loop() {   // transmits sensed data every 2 seconds
+
+    data value;
+    value.temp = (analogRead(temp_pin))*330/1024;  // for 3.3V arduino Pro Mini
+    value.light = analogRead(light_pin);
+    value.battery=analogRead(battery_pin)*100/1024;
+    
+    data_send(value);
+    delay(2000);   // wait for 2 seconds
 }
