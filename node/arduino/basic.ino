@@ -7,6 +7,11 @@
 #define temp_pin A0
 #define battery_pin A1
 #define light_pin A2
+
+
+int led= 2;
+int led_val=0;
+
 // LoRaWAN NwkSKey, network session key
 // This is the default Semtech key, which is used by the early prototype TTN
 // network.
@@ -81,6 +86,7 @@ void onEvent (ev_t ev) {
               Serial.println(F("Received "));
               Serial.println(LMIC.dataLen);
               Serial.println(F(" bytes of payload"));
+              led_val=~led_val;
             }
             // Schedule next transmission
             os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
@@ -148,7 +154,7 @@ void setup() {
     Serial.begin(115200);
     Serial.println(F("Starting"));
 
-    
+    pinMode(led,OUTPUT);
     pinMode(temp_pin,INPUT);
     pinMode(light_pin,INPUT);
     pinMode(battery_pin,INPUT);
@@ -232,5 +238,6 @@ void loop() {   // transmits sensed data every 2 seconds
     value.battery=analogRead(battery_pin)*100/1024;
     
     data_send(value);
+    digitalWrite(led,led_val);
     delay(2000);   // wait for 2 seconds
 }
