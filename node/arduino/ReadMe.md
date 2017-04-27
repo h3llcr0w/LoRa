@@ -14,4 +14,4 @@ Features :
 
 ### Files :
 - basic.ino : Arduino sketch to transmit sensor values to the gateway using LoRaWan protocol.
-</br>`Currently, the device on the node side is switched based on the acknowledgrmrnt from the gateway. The data reception is incomplete for LoRa and this problem has not yet been solved.`
+</br>`Currently, the device on the node side is switched based on the acknowledgement from the gateway. The data reception is incomplete for LoRa and this problem has not yet been solved.`
