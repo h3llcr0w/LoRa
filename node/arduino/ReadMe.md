@@ -9,8 +9,9 @@ Features :
 - This fails with RN2483 modules as the frequency cannot be altered.
 - Payload can be modified for the corresponding sensor by altering the struct variables and changing the corversion mechanism in the loop.
 
-`The above code hasn't been tested yet and is unverified. The developer assumes no liability for any problems resulting from the use of the given  code. Please use at your own risk.`
-`Currently, the device on the node side is switched based on the acknowledgrmrnt from the gateway. The data reception is incomplete for LoRa and this problem has not yet been solved.`
+`The above code hasn't been tested yet and is unverified. The developer assumes no liability for any problems resulting from the use of the given  code. Please use at your own risk.`</br></br>
+
 
 ### Files :
 - basic.ino : Arduino sketch to transmit sensor values to the gateway using LoRaWan protocol.
+</br>`Currently, the device on the node side is switched based on the acknowledgrmrnt from the gateway. The data reception is incomplete for LoRa and this problem has not yet been solved.`
